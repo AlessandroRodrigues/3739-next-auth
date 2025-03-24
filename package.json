@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma migrate dev && prisma generate && prisma db seed && next build",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "prisma db seed",
     "start": "next start",
     "lint": "next lint"
   },
@@ -12,6 +15,7 @@
     "seed": "node prisma/seed.js"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.8.0",
     "@prisma/client": "^5.9.1",
     "next": "14.0.4",
     "next-auth": "^4.24.11",
