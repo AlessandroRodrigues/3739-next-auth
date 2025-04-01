@@ -10,8 +10,10 @@ export const options = {
       clientSecret: process.env.GITHUB_SECRET,
     }),
   ],
-  callback: {
+  callbacks: {
     async session({ session, user }) {
+      console.log("session github", session);
+      console.log("user github", user);
       if (session?.user) {
         session.user.id = user.id;
       }

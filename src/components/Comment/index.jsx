@@ -1,14 +1,13 @@
-import Image from "next/image"
-import styles from './comment.module.css'
+import Image from "next/image";
+import styles from "./comment.module.css";
+import { Author } from "../Author";
 
 export const Comment = ({ comment }) => {
-    return (<div className={styles.comment}>
-        <Image 
-            src={comment.author.avatar} 
-            width={32} height={32} 
-            alt={`Avatar do(a) ${comment.author.name}`} 
-        />
-        <strong>@{comment.author.name}</strong>
-        <p>{comment.text}</p>
-    </div>)
-}
+  return (
+    <div className={styles.comment}>
+      <Author author={comment.author} />
+      <strong>@{comment.author.name}</strong>
+      <p>{comment.text}</p>
+    </div>
+  );
+};
