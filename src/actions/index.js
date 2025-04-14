@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import db from "../../prisma/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
+import bcrypit from "bcrypt";
 
 export async function incrementThumbsUp(post) {
   // await new Promise((resolve) => setTimeout( resolve, 3500))
@@ -72,4 +74,27 @@ export async function postReply(parent, formData) {
     },
   });
   revalidatePath(`/${post.slug}`);
+}
+
+export async function createUser(formData) {
+  try {
+    console.log("iniciando cadastro de usuário...");
+
+    const hashedPassword = bcrypit.hashSync(formData.get("password"), 10);
+
+    await db.user.create({
+      data: {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        password: hashedPassword,
+      },
+    });
+
+    console.log("usuário criado com sucesso!");
+  } catch (error) {
+    console.log("Falha ao criar usuário =>", error);
+    return;
+  }
+
+  redirect("/signin");
 }
