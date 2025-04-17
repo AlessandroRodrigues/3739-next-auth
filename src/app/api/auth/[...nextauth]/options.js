@@ -2,9 +2,14 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialProvider from "next-auth/providers/credentials";
 import db from "../../../../../prisma/db";
+import bcrypt from "bcrypt";
 
 export const options = {
   adapter: PrismaAdapter(db),
+  session: {
+    strategy: "jwt",
+    maxAge: 3000,
+  },
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
@@ -23,14 +28,44 @@ export const options = {
           placeholder: "Digite sua senha",
         },
       },
+      async authorize(credentials) {
+        try {
+          const foundUser = await db.user.findFirst({
+            where: {
+              email: credentials.email,
+            },
+          });
+
+          if (!foundUser) {
+            throw new Error("Usuário não encontrado!");
+          }
+
+          const passMath = bcrypt.compareSync(
+            credentials.password,
+            foundUser.password
+          );
+
+          if (passMath) {
+            console.log("Usuário encontrado", foundUser);
+            delete foundUser.password;
+            return foundUser;
+          }
+
+          throw new Error("Senha incorreta!");
+        } catch (error) {
+          console.log("Error ao autorizar usuário", error);
+        }
+
+        return null;
+      },
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
+    async session({ session, token }) {
       console.log("session github", session);
-      console.log("user github", user);
+      console.log("token", token);
       if (session?.user) {
-        session.user.id = user.id;
+        session.user.id = parseInt(token.sub);
       }
       return session;
     },

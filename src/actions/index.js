@@ -5,7 +5,7 @@ import db from "../../prisma/db";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
-import bcrypit from "bcrypt";
+import bcrypt from "bcrypt";
 
 export async function incrementThumbsUp(post) {
   // await new Promise((resolve) => setTimeout( resolve, 3500))
@@ -80,7 +80,7 @@ export async function createUser(formData) {
   try {
     console.log("iniciando cadastro de usuário...");
 
-    const hashedPassword = bcrypit.hashSync(formData.get("password"), 10);
+    const hashedPassword = bcrypt.hashSync(formData.get("password"), 10);
 
     await db.user.create({
       data: {
