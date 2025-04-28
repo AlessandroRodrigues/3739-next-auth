@@ -1,5 +1,6 @@
 import { Prompt } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/components/AuthProvider";
 
 export const metadata = {
   title: "Code Connect",
@@ -15,7 +16,9 @@ const prompt = Prompt({
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-br" className={prompt.className}>
-      <body>{children}</body>
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
