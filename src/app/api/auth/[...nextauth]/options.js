@@ -70,4 +70,7 @@ export const options = {
       return session;
     },
   },
+  pages: {
+    signIn: "/signin",
+  },
 };
